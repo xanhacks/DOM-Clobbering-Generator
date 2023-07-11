@@ -37,7 +37,7 @@ const attributes = ["accept", "accept-charset", "accesskey", "action", "align", 
 
 let valids = {};
 tags.forEach(tag => {
-	attributes.forEach(attribute => {
+  attributes.forEach(attribute => {
 		if (attribute != "id" && attribute != "name") {
 			document.body.innerHTML = `<${tag} id="xyz" ${attribute}="xanhacks"></${tag}>`;
 			try {
