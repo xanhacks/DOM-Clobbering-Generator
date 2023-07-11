@@ -29,7 +29,8 @@ def print_payloads(payloads):
 def gen_payloads(variable_name, variable_value):
     """Generates the DOM Clobbering payloads."""
     document_scope = variable_name.startswith("document.")
-    variable_name = variable_name.lstrip("document.").lstrip("window.")
+    if variable_name.startswith("window.") or document_scope:
+        variable_name = ".".join(variable_name.split(".")[1:])
     variable_value = variable_value.replace(QUOTE_CHAR, "&quot;")
     payloads = []
     depth = 1 + variable_name.count(".")
