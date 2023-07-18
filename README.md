@@ -45,6 +45,21 @@ List of tags which supports the name attribute:
 
 ## Tool usage
 
+### Depth 1
+
+```bash
+$ python3 generator.py link 'https://example.com'
+********************* INFO **********************
+ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
+variable_name = 'link'
+variable_value = 'https://example.com'
+depth = 1
+document_scope = False
+chrome_required = False
+******************** PAYLOAD #1 ********************
+<a id="link" href="https://example.com"></a>
+```
+
 ### Depth 2
 
 ```bash
