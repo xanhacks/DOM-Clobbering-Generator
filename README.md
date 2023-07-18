@@ -2,6 +2,47 @@
 
 Full article on [OffensiveWeb](https://www.offensiveweb.com/docs/topics/dom-clobbering/).
 
+## Getting started
+
+**DOM Clobbering** is a vulnerability that originates from a naming collision between JavaScript variables and named HTML markups, where browsers replace pre-existing content of an undefined variable with an HTML element when the variable name and the element’s `name` (or `id`) attribute match.
+
+## Attributes
+
+### Attribute id
+
+Example with a random tag with a `id` attribute:
+
+```html
+<h1 id="hd">Super title !</h1>
+
+<script>
+console.log(hd);            // <h1 id="hd">Super title !</h1>
+console.log(window.hd);     // <h1 id="hd">Super title !</h1>
+console.log(document.hd);   // undefined
+console.log(hd.toString()); // [object HTMLHeadingElement]
+console.log(hd.innerText);  // Super title !
+</script>
+```
+
+### Attribute name
+
+Example with a `form` tag with a `name` attribute:
+
+```html
+<form name="fm" method="GET" action="/login"></form>
+
+<script>
+console.log(fm);          // <form name="fm"></form>
+console.log(window.fm);   // <form name="fm"></form>
+console.log(document.fm); // <form name="fm"></form>
+console.log(fm.method);   // get
+console.log(fm.action);   // http://localhost/login
+</script>
+```
+
+List of tags which supports the name attribute:
+- `embed`, `form`, `iframe`, `image`, `img`, `object`
+
 ## Usage
 
 ## Depth 2
