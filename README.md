@@ -1,6 +1,6 @@
 # DOM Clobbering Generator
 
-Full article on [OffensiveWeb](https://www.offensiveweb.com/docs/topics/dom-clobbering/).
+Full article on [OffensiveWeb](https://www.offensiveweb.com/docs/client-side/dom-clobbering/).
 
 ## Getting started
 
