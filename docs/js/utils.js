@@ -68,3 +68,19 @@ function clearNote() {
     note.textContent = '';
     note.style.display = 'none';
 }
+
+/**
+ * HTML encode quotes one or multiple times.
+ * @param {string} html - HTML string to encode.
+ * @param {int} numberOfTimes - Number of times to encode the quotes.
+ * @returns The HTML string with the quotes encoded.
+ */
+function quoteEncode(html, numberOfTimes) {
+    if (numberOfTimes == 0) return html;
+
+    let encoded = html.replace(/"/g, '&quot;')
+    for (let i = 0; i < numberOfTimes - 1; i++) {
+        encoded = encoded.replace(/&/g, '&amp;');
+    }
+    return encoded;
+}
