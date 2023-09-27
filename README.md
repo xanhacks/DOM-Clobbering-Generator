@@ -1,12 +1,14 @@
 # DOM Clobbering Generator
 
-Full article on [OffensiveWeb](https://www.offensiveweb.com/docs/client-side/dom-clobbering/).
+An online version of the tool can be found at: [domclob.xanhacks.xyz](https://domclob.xanhacks.xyz/).
 
 ## Getting started
 
-**DOM Clobbering** is a vulnerability that originates from a naming collision between JavaScript variables and named HTML markups, where browsers replace pre-existing content of an undefined variable with an HTML element when the variable name and the element’s `name` (or `id`) attribute match.
+**DOM Clobbering** is a vulnerability that originates from a naming collision between JavaScript variables and named HTML markups, where browsers replace pre-existing content of an undefined variable with an HTML element when the element's `id` (or `name`) attribute match.
 
-## Attributes
+Detailed article on [OffensiveWeb](https://www.offensiveweb.com/docs/client-side/dom-clobbering/).
+
+## Examples
 
 ### Attribute id
 
@@ -43,65 +45,33 @@ console.log(fm.action);   // http://localhost/login
 List of tags which supports the name attribute:
 - `embed`, `form`, `iframe`, `image`, `img`, `object`
 
-## Tool usage
-
 ### Depth 1
 
-```bash
-$ python3 generator.py link 'https://example.com'
-********************* INFO **********************
-ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
-variable_name = 'link'
-variable_value = 'https://example.com'
-depth = 1
-document_scope = False
-chrome_required = False
-******************** PAYLOAD #1 ********************
+- Set `window.link` to `https://example.com`
+
+```html
 <a id="link" href="https://example.com"></a>
 ```
 
 ### Depth 2
 
-```bash
-$ python3 generator.py video.lang 'Hello!'
-********************* INFO **********************
-ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
-variable_name = 'video.lang'
-variable_value = 'Hello!'
-depth = 2
-document_scope = False
-chrome_required = True
-******************** PAYLOAD #1 ********************
+- Set `video.lang` to `Hello!`
+
+```html
 <a id="video" lang="Hello!"></a>
-******************** PAYLOAD #2 ********************
 <form id="video" lang="Hello!"></form>
-******************** PAYLOAD #3 ********************
 <form name="video" lang="Hello!"></form>
-******************** PAYLOAD #4 ********************
 <input id="video" lang="Hello!"></input>
-******************** PAYLOAD #5 ********************
 <iframe id="video" lang="Hello!"></iframe>
-******************** PAYLOAD #6 ********************
 <iframe name="video" lang="Hello!"></iframe>
-******************** PAYLOAD #7 ********************
 <a id="video"></a><a id="video" name="lang" href="a:Hello!"></a>
 ```
 
 ### Depth 3
 
-```bash
-$ python3 generator.py users.permission.role 'admin'
-********************* INFO **********************
-ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
-variable_name = 'users.permission.role'
-variable_value = 'admin'
-depth = 3
-document_scope = False
-chrome_required = True
-******************** PAYLOAD #1 ********************
-<form id="users" name="permission" role="admin"></form>
-<form id="users">
-******************** PAYLOAD #2 ********************
+- Set `users.permission.role` to `admin`
+
+```html
 <form id="users" name="permission">
     <input id="role" value="admin">
 </form>
@@ -110,23 +80,16 @@ chrome_required = True
 
 ### Depth 4
 
-```bash
-$ python3 generator.py music.metadata.sound.max '100%'
-********************* INFO **********************
-ALLOWED_ELEMENTS = ['a', 'form', 'input', 'iframe']
-variable_name = 'music.metadata.sound.max'
-variable_value = '100%'
-depth = 4
-document_scope = False
-chrome_required = True
-******************** PAYLOAD #1 ********************
+- Set `music.metadata.sound.max` to `100%`
+
+```html
 <form id="music" name="metadata">
     <input id="sound" max="100%">
 </form>
 <form id="music">
 ```
 
-## attributes.json 
+## Special Attributes
 
 ```js
 const tags = ["a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "bgsound", "big", "blink", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "head", "header", "hgroup", "hr", "html", "i", "iframe", "image", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "marquee", "menu", "menuitem", "meta", "meter", "nav", "nobr", "noembed", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "picture", "plaintext", "portal", "pre", "progress", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "script", "section", "select", "slot", "small", "source", "spacer", "span", "strike", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr", "xmp"];
