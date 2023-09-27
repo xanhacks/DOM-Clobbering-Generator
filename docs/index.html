@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DOM Clobbering Payloads Generator</title>
-    <link rel="stylesheet" href="main.css">
-    <script src="/constants.js"></script>
-    <script src="/utils.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <script src="/js/constants.js"></script>
+    <script src="/js/utils.js"></script>
 </head>
 <body>
 
@@ -21,6 +21,8 @@
         <input class="user-inputs" type="text" id="variableValueInput" placeholder="xanhacks">
 
         <hr class="divider" />
+
+        <p id="note">Hello!</p>
 
         <div id="payloadsContainer">
 
@@ -77,7 +79,14 @@
                 if (!isValidURI(variableValue)) {
                     variableValue = "a:" + variableValue;
                 }
-                payloads.push(`<a id="${variableName}" href="${variableValue}"></a>`);
+                if (documentScope) {
+                    setNote('Unable to set the value of this variable, retry without "document." or by using "window." instead.');
+                    SUPPORTS_NAME_ATTR.forEach(htmlTag => {
+                        payloads.push(`<${htmlTag} name="${variableName}"></${htmlTag}>`);
+                    });
+                } else {
+                    payloads.push(`<a id="${variableName}" href="${variableValue}"></a>`);
+                }
             } else if (depth === 2) {
                 const [first, second] = variableName.split(".");
 
@@ -126,6 +135,7 @@
                 }
             }
             
+            clearNote();
             const payloads = domClobbering(variableNameInput.value, variableValueInput.value);
             displayPayloads(payloads);
         }

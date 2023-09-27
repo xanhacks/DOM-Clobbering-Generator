@@ -51,3 +51,20 @@ function isValidURI(uri) {
         return false;
     }
 }
+
+/**
+ * Display a message in the note element.
+ * @param {string} message - The message to display.
+ */
+function setNote(message) {
+    note.textContent = message;
+    note.style.display = 'block';
+}
+
+/**
+ * Clear the note element and hide it.
+ */
+function clearNote() {
+    note.textContent = '';
+    note.style.display = 'none';
+}
