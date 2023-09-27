@@ -103,15 +103,13 @@
                     variableValue = "a:" + variableValue;
                 }
                 payloads.push(`<a id="${first}"></a><a id="${first}" name="${second}" href="${variableValue}"></a>`);
-            } else if (depth == 3) {
+            } else if (depth === 3) {
                 const [first, second, third] = variableName.split(".");
 
                 if (ALLOWED_ELEMENTS.includes("form")) {
                     if (isEnding("form", third)) {
                         payloads.push(`<form id="${first}" name="${second}" ${third}="${variableValue}"></form>\n<form id="${first}">`);
-                    }
-
-                    if (ALLOWED_ELEMENTS.includes("input")) {
+                    } else if (ALLOWED_ELEMENTS.includes("input")) {
                         payloads.push(`<form id="${first}" name="${second}">\n\t<input id="${third}" value="${variableValue}">\n</form>\n<form id="${first}">`);
                     }
                 }

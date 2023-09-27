@@ -63,17 +63,16 @@ body {
 }
 
 .payload-copy-btn {
-    background-color: #A0A0A0;
+    background-color: #D5D5D5;
     color: black;
     border: none;
     padding: 5px 10px;
     cursor: pointer;
     border-radius: 3px;
-    transition: background-color 0.3s;
 }
 
 .payload-copy-btn:hover {
-    background-color: #D0D0D0;
+    background-color: #FFFFFF;
 }
 
 .mt-25 {

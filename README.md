@@ -2,6 +2,8 @@
 
 An online version of the tool can be found at: [domclob.xanhacks.xyz](https://domclob.xanhacks.xyz/).
 
+![Example of usage](./assets/example_of_usage.png)
+
 ## Getting started
 
 **DOM Clobbering** is a vulnerability that originates from a naming collision between JavaScript variables and named HTML markups, where browsers replace pre-existing content of an undefined variable with an HTML element when the element's `id` (or `name`) attribute match.
